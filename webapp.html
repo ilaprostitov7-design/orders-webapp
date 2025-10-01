@@ -243,10 +243,10 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" onclick="showTab('dashboard')">📊 Панель</div>
-            <div class="tab" onclick="showTab('orders')">📦 Заказы</div>
-            <div class="tab" onclick="showTab('workers')">👥 Сотрудники</div>
-            <div class="tab" onclick="showTab('admin')">⚙️ Админка</div>
+            <div class="tab active" onclick="showTab('dashboard', this)">📊 Панель</div>
+            <div class="tab" onclick="showTab('orders', this)">📦 Заказы</div>
+            <div class="tab" onclick="showTab('workers', this)">👥 Сотрудники</div>
+            <div class="tab" onclick="showTab('admin', this)">⚙️ Админка</div>
         </div>
 
         <div id="dashboard" class="tab-content active">
@@ -399,7 +399,7 @@
         }
 
         // Показ вкладки
-        function showTab(tabId) {
+        function showTab(tabId, clickedTab) {
             // Скрыть все вкладки
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -412,7 +412,9 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
 
             // Загрузить данные для вкладки
             switch(tabId) {
@@ -566,7 +568,7 @@
             let workersHtml = '';
             pageWorkers.forEach(worker => {
                 workersHtml += `
-                    <div class="worker-card" onclick="selectWorker(${worker.id})">
+                    <div class="worker-card" onclick="selectWorker(${worker.id}, this)">
                         <h3>${worker.name}</h3>
                         <p>⭐ Рейтинг: ${worker.rating}</p>
                         <p>🟢 Статус: ${worker.status}</p>
@@ -605,19 +607,22 @@
         }
 
         // Выбор сотрудника
-        function selectWorker(workerId) {
-            const workerCard = event.currentTarget;
+        function selectWorker(workerId, workerCard) {
 
             // Проверить, не выбран ли уже
             const index = selectedWorkers.indexOf(workerId);
             if (index > -1) {
                 // Убрать из выбранных
                 selectedWorkers.splice(index, 1);
-                workerCard.classList.remove('selected');
+                if (workerCard) {
+                    workerCard.classList.remove('selected');
+                }
             } else {
                 // Добавить в выбранные
                 selectedWorkers.push(workerId);
-                workerCard.classList.add('selected');
+                if (workerCard) {
+                    workerCard.classList.add('selected');
+                }
             }
 
             showNotification(`Выбрано сотрудников: ${selectedWorkers.length}`);
